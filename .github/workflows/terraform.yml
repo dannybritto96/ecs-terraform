@@ -47,10 +47,9 @@ name: 'Terraform'
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - terraform/**
-  pull_request:
+      - 'terraform/**'
 
 permissions:
   contents: read
