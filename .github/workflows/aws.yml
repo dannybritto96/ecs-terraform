@@ -28,6 +28,8 @@ name: Deploy to Amazon ECS
 
 on:
   push:
+    paths-ignore:
+      - terraform/**
     branches:
       - main
 
