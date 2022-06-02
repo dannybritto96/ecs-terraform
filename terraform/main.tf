@@ -1,6 +1,5 @@
 provider "aws" {
     region = var.region
-    profile = "danny"
 }
 
 resource "aws_vpc" "vpc" {
@@ -134,7 +133,7 @@ resource "aws_kms_key" "kms_key" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${data.aws_caller_identity.account_id}:root"
+        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
       },
       "Action": "kms:*",
       "Resource" : "*"
@@ -261,21 +260,21 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
 
 resource "aws_security_group" "alb_sg" {
   name = "alb-sg-${var.env}"
-  vpc_id = aws_vpc.dev_vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     description = "Allow 80"
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = [aws_vpc.dev_vpc.cidr_block]
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
 
   egress {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = [aws_vpc.dev_vpc.cidr_block]
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
 
   tags = {
@@ -290,7 +289,7 @@ resource "aws_lb" "alb" {
   internal = true
   load_balancer_type = "application"
   security_groups = [aws_security_group.alb_sg.id]
-  subnets = [aws_subnet.privatesubnet1, aws_subnet.privatesubnet2]
+  subnets = [aws_subnet.privatesubnet1.id, aws_subnet.privatesubnet2.id]
   tags = {
     env = var.env
   }
@@ -307,7 +306,7 @@ resource "aws_lb_target_group" "tg1" {
   port = 5002
   protocol = "HTTP"
   target_type = "ip"
-  vpc_id = aws_vpc.dev_vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   health_check {
     enabled = true
@@ -333,7 +332,7 @@ resource "aws_lb_listener" "listener1" {
 
 resource "aws_security_group" "service_1_sg" {
   name = "flask-service-1-sg-${var.env}"
-  vpc_id = aws_vpc.dev_vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     description = "Allow 5002"
@@ -378,6 +377,38 @@ resource "aws_ecs_cluster" "cluster" {
   }
 }
 
+resource "aws_ecs_task_definition" "service1" {
+  family = "flask-service-1"
+  cpu = 256
+  
+  memory = 512
+  network_mode = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  runtime_platform  {
+    operating_system_family = "LINUX"
+    cpu_architecture = "X86_64"
+  }
+  execution_role_arn = aws_iam_role.task_role.arn
+
+  depends_on = [
+    aws_iam_role.task_role
+  ]
+
+  container_definitions = jsonencode([
+    {
+      name = "flask-service-1"
+      image = "${aws_ecr_repository.service1.repository_url}:latest"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 5002
+          hostPort = 5002
+        }
+      ]
+    }
+  ])
+}
+
 resource "aws_ecs_service" "service_1" {
   name = "flask-service-1"
   cluster = aws_ecs_cluster.cluster.id
@@ -393,7 +424,7 @@ resource "aws_ecs_service" "service_1" {
   }
 
   network_configuration {
-    subnets = [aws_subnet.privatesubnet1, aws_subnet.privatesubnet2]
+    subnets = [aws_subnet.privatesubnet1.id, aws_subnet.privatesubnet2.id]
     security_groups = [aws_security_group.service_1_sg.id]
     assign_public_ip = false
   }
@@ -401,7 +432,7 @@ resource "aws_ecs_service" "service_1" {
 
 resource "aws_security_group" "gw_sg" {
   name = "gw-sg-${var.env}"
-  vpc_id = aws_vpc.dev_vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     description = "Allow 80"
@@ -415,7 +446,7 @@ resource "aws_security_group" "gw_sg" {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = [aws_vpc.dev_vpc.cidr_block]
+    cidr_blocks = [aws_vpc.vpc.cidr_block]
   }
 
   tags = {
@@ -427,7 +458,7 @@ resource "aws_security_group" "gw_sg" {
 resource "aws_apigatewayv2_vpc_link" "link" {
     name = "${var.env}-vpc-lnk"
     security_group_ids = [aws_security_group.gw_sg.id]
-    subnet_ids = [aws_subnet.publicsubnet1, aws_subnet.publicsubnet2]
+    subnet_ids = [aws_subnet.publicsubnet1.id, aws_subnet.publicsubnet2.id]
 }
 
 resource "aws_cloudwatch_log_group" "apigw_log_group" {

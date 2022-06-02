@@ -21,7 +21,8 @@
     "cpu": "256",
     "memory": "512",
     "runtimePlatform": {
-        "operatingSystemFamily": "LINUX"
+        "operatingSystemFamily": "LINUX",
+        "cpuArchitecture": "X86_64"
     },
     "family": "flask-service-1"
 }
