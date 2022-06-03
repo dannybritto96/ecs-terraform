@@ -12,10 +12,8 @@ env:
   ECR_REPOSITORY: 383400336774.dkr.ecr.us-east-1.amazonaws.com/flask-service-1
   ECS_SERVICE: flask-service-1
   ECS_CLUSTER: app-ecs-dev
-  ECS_TASK_DEFINITION: ./taskdef.json # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: flask-service-1           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  ECS_TASK_DEFINITION: ./taskdef.json 
+  CONTAINER_NAME: flask-service-1
 
 permissions:
   contents: read
@@ -24,7 +22,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
+    environment: dev
 
     steps:
     - name: Checkout
