@@ -5,6 +5,8 @@
 
 ## Arch
 
+The ECS Service is fronted with an internal load balancer which is accesible only inside the VPC. An API Gateway accessible from the internet is deployed which acts as a proxy to the internal load balancer.
+
 ![architecture-diagram](https://github.com/dannybritto96/ecs-terraform/blob/31975018f6f2b718ff017467fd059e84a67b3e2c/ECS%20Arch.png)
 
 ## GitHub Actions
@@ -21,5 +23,5 @@
 
 ### AWS Credentials
 
-- AWS_ACCESS_KEY_ID and AWS_ACCESS_SECRET_TOKEN must be added to the GitHub secrets. Information on how to add secrets to GitHub [https://learn.hashicorp.com/tutorials/terraform/github-actions](https://learn.hashicorp.com/tutorials/terraform/github-actions)
+- AWS_ACCESS_KEY_ID and AWS_ACCESS_SECRET_TOKEN must be added to the GitHub secrets. Information on how to add secrets to GitHub [https://docs.github.com/en/actions/security-guides/encrypted-secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
