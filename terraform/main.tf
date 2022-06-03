@@ -1,3 +1,13 @@
+terraform {
+  cloud {
+    organization = "dannybritto96"
+
+    workspaces {
+      name = "ecs-dev"
+    }
+  }
+}
+
 provider "aws" {
     region = var.region
 }
