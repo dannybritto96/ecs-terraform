@@ -490,3 +490,8 @@ resource "aws_apigatewayv2_route" "api_route" {
   route_key = "ANY /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.api_int.id}"
 }
+
+resource "aws_apigatewayv2_stage" "example" {
+  api_id = aws_apigatewayv2_api.api_gw.id
+  name   = "$default"
+}
