@@ -305,12 +305,6 @@ resource "aws_lb" "alb" {
   }
 }
 
-resource "aws_ssm_parameter" "lbname" {
-  name  = "/backend-service/dns"
-  type  = "String"
-  value = aws_lb.alb.dns_name
-}
-
 resource "aws_lb_target_group" "tg1" {
   name        = "app-${var.env}-tg"
   port        = 5002
