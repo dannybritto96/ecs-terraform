@@ -1,9 +1,9 @@
 {
-    "executionRoleArn": "",
+    "executionRoleArn": "arn:aws:iam::383400336774:role/TaskRole-dev",
     "containerDefinitions": [
         {
             "name": "flask-service-1",
-            "image": "",
+            "image": "383400336774.dkr.ecr.us-east-1.amazonaws.com/flask-service-1:latest",
             "essential": true,
             "portMappings": [
                 {
