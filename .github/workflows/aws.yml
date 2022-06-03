@@ -9,7 +9,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: 383400336774.dkr.ecr.us-east-1.amazonaws.com/flask-service-1
+  ECR_REPOSITORY: flask-service-1
   ECS_SERVICE: flask-service-1
   ECS_CLUSTER: app-ecs-dev
   ECS_TASK_DEFINITION: ./taskdef.json 
