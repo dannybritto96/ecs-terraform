@@ -492,6 +492,7 @@ resource "aws_apigatewayv2_route" "api_route" {
 }
 
 resource "aws_apigatewayv2_stage" "example" {
-  api_id = aws_apigatewayv2_api.api_gw.id
-  name   = "$default"
+  api_id      = aws_apigatewayv2_api.api_gw.id
+  name        = "$default"
+  auto_deploy = true
 }
