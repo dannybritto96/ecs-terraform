@@ -1,4 +1,4 @@
-FROM 383400336774.dkr.ecr.us-east-1.amazonaws.com/python:latest
+FROM python:3.7.13-alpine
 
 ADD app.py app.py
 ADD requirements.txt requirements.txt
