@@ -46,7 +46,7 @@ class Customers(Resource):
         params = {}
         customer_id = None
         update_query = "update Customers set "
-        for i,j in args.iteritems():
+        for i,j in args.items():
             if i == 'CustomerID':
                 customer_id = j
             update_query = update_query + "{0} = \"{1}\",".format(i,j)
