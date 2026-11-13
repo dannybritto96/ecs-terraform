@@ -1,4 +1,4 @@
-FROM python:3.7.13-alpine
+FROM python:3.10-alpine
 
 ADD app.py app.py
 ADD requirements.txt requirements.txt
